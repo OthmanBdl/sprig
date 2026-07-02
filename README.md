@@ -223,6 +223,19 @@ Current limitations, kept deliberately to keep the codebase small and readable: 
 - A bytecode compiler and virtual machine (the `clox` approach)
 
 ---
+## Credits & further reading
+
+The design of Sprig — especially the lexer, recursive-descent parser, and
+tree-walking evaluator — was inspired by **_Crafting Interpreters_** by
+Robert Nystrom, an outstanding (and freely available) book on how to build
+a programming language from scratch.
+
+- Read it online for free: https://craftinginterpreters.com/
+- The book builds two interpreters for a language called Lox: a tree-walking
+  interpreter (`jlox`, which Sprig resembles) and a bytecode virtual machine
+  (`clox`).
+
+If you enjoyed exploring Sprig, that book is the best next step.
 
 ## Author
 
