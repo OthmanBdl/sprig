@@ -1,0 +1,7 @@
+// hello.sprig — the classic first program in Sprig
+
+print("Hello, World!")
+
+// Strings can be stored in variables and combined
+name = "Sprig"
+print("Welcome to", name)

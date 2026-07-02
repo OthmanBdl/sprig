@@ -31,7 +31,7 @@ AND       = "AND"        # and
 OR        = "OR"         # or
 NOT       = "NOT"        # not
 EOF       = "EOF"        # end of input
-
+PERCENT   = "PERCENT"    # %
 
 class Token:
     def __init__(self, type_, value=None):
@@ -57,7 +57,7 @@ class Lexer:
             char = self.source[self.pos]
 
             # Skip whitespace.
-            if char in " \t":
+            if char in " \t\n":
                 self.pos += 1
 
             # A number: read all consecutive digits at once.
@@ -79,8 +79,13 @@ class Lexer:
                 tokens.append(Token(STAR))
                 self.pos += 1
             elif char == "/":
-                tokens.append(Token(SLASH))
-                self.pos += 1
+                if self.peek_char() == "/":
+                    # A comment: skip everything until the end of the line.
+                    while self.pos < len(self.source) and self.source[self.pos] != "\n":
+                        self.pos += 1
+                else:
+                    tokens.append(Token(SLASH))
+                    self.pos += 1
             elif char == "(":
                 tokens.append(Token(LPAREN))
                 self.pos += 1
@@ -99,6 +104,10 @@ class Lexer:
             elif char == ";":
                 tokens.append(Token(SEMICOLON))
                 self.pos += 1
+            elif char == "%":
+                tokens.append(Token(PERCENT))
+                self.pos += 1
+            
 
             # Operators that may be one or two characters: look ahead to decide.
             elif char == "<":

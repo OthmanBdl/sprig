@@ -1,0 +1,15 @@
+// factorial.sprig — computing factorials with a function and a loop
+
+fun factorial(n) {
+    result = 1
+    for (i = 1; i <= n; i = i + 1) {
+        result = result * i
+    }
+    return result
+}
+
+// Print the factorial of each number from 1 to 6
+print("Factorials from 1 to 6:")
+for (n = 1; n <= 6; n = n + 1) {
+    print(n, "! =", factorial(n))
+}

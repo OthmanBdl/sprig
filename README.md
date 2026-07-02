@@ -2,20 +2,21 @@
 
 **A small programming language and interpreter, built from scratch in Python.**
 
-Sprig is a tree-walking interpreter for a little language of my own design. It has variables, arithmetic with proper operator precedence, booleans and logical operators, `if`/`else`, `while` and `for` loops, and functions with parameters, local scope, and `return`. It's small enough to read in an afternoon, but complete enough to be **Turing-complete** — it can express any computation.
+Sprig is a tree-walking interpreter for a little language of my own design. It has variables, arithmetic with proper operator precedence, booleans and logical operators, `if`/`else`, `while` and `for` loops, functions with parameters, local scope, and `return`, plus line comments. It's small enough to read in an afternoon, but complete enough to be **Turing-complete** — it can express any computation.
 
 I built it end to end to understand how programming languages actually work: how source text becomes tokens, how tokens become a syntax tree, and how that tree is executed.
 
 ```
-fun fact(n) {
-    r = 1
+// Compute a factorial
+fun factorial(n) {
+    result = 1
     for (i = 1; i <= n; i = i + 1) {
-        r = r * i
+        result = result * i
     }
-    return r
+    return result
 }
 
-print("5! =", fact(5))   // 5! = 120
+print("5! =", factorial(5))   // 5! = 120
 ```
 
 ---
@@ -25,10 +26,10 @@ print("5! =", fact(5))   // 5! = 120
 Sprig follows the classic interpreter pipeline. Source code flows through three stages before it runs:
 
 ```
-source text  →  Lexer  →  tokens  →  Parser  →  AST  →  Interpreter  →  result
+source text  ->  Lexer  ->  tokens  ->  Parser  ->  AST  ->  Interpreter  ->  result
 ```
 
-- **Lexer** (`lexer.py`) scans the raw text character by character and groups it into *tokens* (numbers, operators, keywords, identifiers).
+- **Lexer** (`lexer.py`) scans the raw text character by character and groups it into *tokens* (numbers, strings, operators, keywords, identifiers). It also skips whitespace and `//` comments.
 - **Parser** (`parser.py`) turns the flat token list into an *abstract syntax tree* (AST) using recursive descent, so operator precedence is captured by the shape of the tree.
 - **Interpreter** (`interpreter.py`) walks the tree and evaluates it, managing variables and function scopes along the way.
 
@@ -40,13 +41,11 @@ The AST node types live in `ast_nodes.py`, and `repl.py` wires everything togeth
 
 Sprig needs only Python 3 — no external dependencies.
 
-Start the interactive REPL:
+**Interactive REPL** — type code line by line:
 
 ```bash
 python repl.py
 ```
-
-Then type code at the prompt:
 
 ```
 sprig> x = 10
@@ -59,9 +58,37 @@ hello world
 
 Type `exit` (or press Ctrl+D) to quit.
 
+**Run a file** — execute a whole `.sprig` program:
+
+```bash
+python run_file.py examples/factorial.sprig
+```
+
+---
+
+## Examples
+
+The `examples/` folder contains ready-to-run Sprig programs:
+
+| File               | What it shows                                          |
+|--------------------|--------------------------------------------------------|
+| `hello.sprig`      | Printing and strings — the classic first program       |
+| `factorial.sprig`  | A function with a loop and a `return`                   |
+| `fibonacci.sprig`  | Updating two variables together inside a loop          |
+| `fizzbuzz.sprig`   | Modulo, logical operators, and nested conditionals     |
+
+Run any of them with `python run_file.py examples/<name>.sprig`.
+
 ---
 
 ## Language tour
+
+### Comments
+
+```
+// This is a comment; everything after // on the line is ignored.
+x = 5   // comments can follow code too
+```
 
 ### Values
 
@@ -82,11 +109,12 @@ count = 3
 
 ### Arithmetic and comparison
 
-Operator precedence works as you'd expect — multiplication before addition, and so on.
+Operator precedence works as you'd expect — multiplication, division, and modulo before addition and subtraction.
 
 ```
 2 + 3 * 4        // 14
 (2 + 3) * 4      // 20
+10 % 3           // 1
 10 > 3           // true
 5 == 5           // true
 ```
@@ -158,8 +186,8 @@ sprig/
 ├── ast_nodes.py     # the AST node definitions
 ├── interpreter.py   # AST          -> result (tree-walking evaluator)
 ├── repl.py          # interactive prompt
-├── examples/        # sample programs written in Sprig
-└── tests/           # automated tests
+├── run_file.py      # run a .sprig file
+└── examples/        # sample programs written in Sprig
 ```
 
 ---
@@ -169,12 +197,13 @@ sprig/
 | Category   | Supported                                             |
 |------------|-------------------------------------------------------|
 | Types      | numbers, strings, booleans                            |
-| Arithmetic | `+`  `-`  `*`  `/`                                     |
+| Arithmetic | `+`  `-`  `*`  `/`  `%`                                |
 | Comparison | `<`  `>`  `<=`  `>=`  `==`  `!=`                       |
 | Logic      | `and`  `or`  `not` (short-circuit)                     |
-| Control    | `if` / `else`, `while`, `for`                         |
+| Control    | `if` / `else`, `while`, `for`                          |
 | Functions  | definition, parameters, local scope, `return`         |
 | Built-ins  | `print`                                               |
+| Comments   | `//` to end of line                                   |
 
 ---
 
@@ -182,14 +211,13 @@ sprig/
 
 Sprig is a **tree-walking interpreter**: it executes the AST directly. This is the same architecture as `jlox` from Robert Nystrom's *Crafting Interpreters*, and it's the simplest way to get a working language. Production languages like CPython go one step further and compile the AST to bytecode that a virtual machine executes, which is faster — a natural next step for a version 2.
 
-Current limitations, kept deliberately to keep the codebase small and readable: no data structures (lists, dictionaries) yet, integer/float division follows Python's rules, and errors don't yet report line numbers. These are good candidates for future work.
+Current limitations, kept deliberately to keep the codebase small and readable: no data structures (lists, dictionaries) yet, division follows Python's rules, and errors don't yet report line numbers. These are good candidates for future work.
 
 ---
 
 ## Possible next steps
 
 - Line numbers in error messages
-- Running `.sprig` files directly (not just the REPL)
 - More built-ins (`len`, `input`, math helpers)
 - Data structures: lists and dictionaries
 - A bytecode compiler and virtual machine (the `clox` approach)

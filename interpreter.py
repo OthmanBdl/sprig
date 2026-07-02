@@ -74,6 +74,8 @@ class Interpreter:
                 return left == right
             if node.op == "!=":
                 return left != right
+            if node.op == "%":
+                return left % right
             raise Exception(f"Unknown operator: {node.op}")
 
         if isinstance(node, UnaryOp):

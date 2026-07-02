@@ -1,0 +1,16 @@
+// fibonacci.sprig — printing the Fibonacci sequence
+
+fun fibonacci(count) {
+    a = 0
+    b = 1
+    for (i = 0; i < count; i = i + 1) {
+        print(a)
+        // The next number is the sum of the previous two
+        next = a + b
+        a = b
+        b = next
+    }
+}
+
+print("The first 10 Fibonacci numbers:")
+fibonacci(10)

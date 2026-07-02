@@ -1,4 +1,4 @@
-from lexer import (NUMBER, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, EOF,
+from lexer import (NUMBER, PERCENT, PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, EOF,
                    IDENT, ASSIGN, TRUE, FALSE, LT, GT, LE, GE, EQ, NE,
                    IF, ELSE, LBRACE, RBRACE, WHILE, FUN, RETURN, COMMA,
                    AND, OR, NOT, FOR, SEMICOLON, STRING)
@@ -171,9 +171,14 @@ class Parser:
     # Multiplication and division.
     def term(self):
         node = self.unary()
-        while self.peek().type in (STAR, SLASH):
+        while self.peek().type in (STAR, SLASH, PERCENT):   # ← PERCENT ajouté
             op_token = self.advance()
-            op = "*" if op_token.type == STAR else "/"
+            if op_token.type == STAR:
+                op = "*"
+            elif op_token.type == SLASH:
+                op = "/"
+            else:
+                op = "%"                                    # ← nouveau
             right = self.unary()
             node = BinaryOp(node, op, right)
         return node
